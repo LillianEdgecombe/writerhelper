@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Developer Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Character Developer Tool</h1>
+
+            <form id="charForm" class="space-y-8">
+                <!-- Basic Information -->
+                <section>
+                    <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">Basic Information</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Name</label>
+                            <input type="text" name="name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="e.g., Elara Moonwhisper">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Gender</label>
+                            <input type="text" name="gender" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="e.g., Female">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Genre</label>
+                            <input type="text" name="genre" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="e.g., Fantasy">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Role</label>
+                            <input type="text" name="role" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="e.g., Protagonist">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Physical Description -->
+                <section>
+                    <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">Physical Description</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Age</label>
+                            <input type="text" name="age" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Appearance</label>
+                            <textarea name="appearance" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Describe hair, eyes, height..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Style</label>
+                            <input type="text" name="style" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Clothing style...">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Personality & Psychology -->
+                <section>
+                    <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">Personality & Psychology</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Goal</label>
+                            <input type="text" name="goal" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Fear</label>
+                            <input type="text" name="fear" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Flaw</label>
+                            <input type="text" name="flaw" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Voice & Speech -->
+                <section>
+                    <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">Voice & Speech</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Tone</label>
+                            <input type="text" name="tone" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Cadence</label>
+                            <input type="text" name="cadence" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Phrases</label>
+                            <input type="text" name="phrases" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Backstory -->
+                <section>
+                    <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">Backstory</h2>
+                    <textarea name="backstory" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"></textarea>
+                </section>
+
+                <div class="flex space-x-4">
+                    <button type="button" id="btnPortrait" class="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">Generate Portrait</button>
+                    <button type="button" id="btnExport" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition">Export Markdown</button>
+                </div>
+            </form>
+
+            <!-- Results Section -->
+            <div id="portraitResult" class="mt-8 hidden">
+                <h2 class="text-2xl font-bold mb-4">Character Portrait</h2>
+                <img id="charPortrait" src="" alt="Portrait" class="w-full rounded-lg shadow-lg">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getFormData() {
+            const form = document.getElementById('charForm');
+            const formData = new FormData(form);
+            return {
+                "Basic Information": {
+                    "Name": formData.get('name'),
+                    "Gender": formData.get('gender'),
+                    "Genre": formData.get('genre'),
+                    "Role": formData.get('role')
+                },
+                "Physical Description": {
+                    "Age": formData.get('age'),
+                    "Appearance": formData.get('appearance'),
+                    "Style": formData.get('style')
+                },
+                "Personality & Psychology": {
+                    "Goal": formData.get('goal'),
+                    "Fear": formData.get('fear'),
+                    "Flaw": formData.get('flaw')
+                },
+                "Voice & Speech": {
+                    "Tone": formData.get('tone'),
+                    "Cadence": formData.get('cadence'),
+                    "Phrases": formData.get('phrases')
+                },
+                "Backstory": formData.get('backstory'),
+                "Portrait URL": document.getElementById('charPortrait').src.startsWith('http') ? document.getElementById('charPortrait').src : ""
+            };
+        }
+
+        document.getElementById('btnPortrait').addEventListener('click', async () => {
+            const data = getFormData();
+            const btn = document.getElementById('btnPortrait');
+            btn.innerText = 'Generating...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/generate-portrait', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+
+                const img = document.getElementById('charPortrait');
+                img.src = result.portrait_url;
+                document.getElementById('portraitResult').classList.remove('hidden');
+            } finally {
+                btn.innerText = 'Generate Portrait';
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('btnExport').addEventListener('click', async () => {
+            const data = getFormData();
+            const response = await fetch('/export-markdown', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let filename = 'character_profile.md';
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename=(.+)/);
+                if (filenameMatch) filename = filenameMatch[1];
+            }
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+        });
+    </script>
+</body>
+</html>

@@ -2,9 +2,9 @@ import urllib.parse
 import random
 import re
 
-class CharacterDeveloper:
-    def __init__(self):
-        self.character_data = {
+class Character:
+    def __init__(self, data=None):
+        self.data = data or {
             "Basic Information": {},
             "Physical Description": {},
             "Personality & Psychology": {},
@@ -13,11 +13,51 @@ class CharacterDeveloper:
             "Portrait URL": ""
         }
 
+    def generate_portrait_url(self):
+        appearance = self.data["Physical Description"].get("Appearance", "")
+        style = self.data["Physical Description"].get("Style", "")
+        genre = self.data["Basic Information"].get("Genre", "")
+
+        prompt = f"Character portrait of a {genre} character, {appearance}, wearing {style}. Cinematic lighting, detailed."
+        encoded_prompt = urllib.parse.quote(prompt)
+        seed = random.randint(0, 1000000)
+
+        image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=1024&seed={seed}&nologo=true"
+        self.data["Portrait URL"] = image_url
+        return image_url
+
+    def get_safe_filename(self):
+        name = self.data["Basic Information"].get("Name", "Character")
+        safe_name = re.sub(r'[^\w\s-]', '', name).strip().lower()
+        safe_name = re.sub(r'[-\s]+', '_', safe_name)
+        return f"{safe_name if safe_name else 'character'}_profile.md"
+
+    def to_markdown(self):
+        name = self.data["Basic Information"].get("Name", "Character")
+        md = f"# Character Profile: {name}\n\n"
+        if self.data.get("Portrait URL"):
+            md += f"![Character Portrait]({self.data['Portrait URL']})\n\n"
+
+        for section, content in self.data.items():
+            if isinstance(content, dict):
+                md += f"## {section}\n"
+                for key, value in content.items():
+                    md += f"- **{key}:** {value}\n"
+                md += "\n"
+            elif section != "Portrait URL":
+                md += f"## {section}\n"
+                md += f"{content}\n\n"
+        return md
+
+class CharacterDeveloperCLI:
+    def __init__(self):
+        self.character = Character()
+
     def ask_question(self, section, key, prompt, default=""):
         value = input(f"{prompt} [{default}]: ").strip()
         if not value:
             value = default
-        self.character_data[section][key] = value
+        self.character.data[section][key] = value
 
     def develop_basic_info(self):
         print("\n--- Basic Information ---")
@@ -47,48 +87,7 @@ class CharacterDeveloper:
     def develop_backstory(self):
         print("\n--- Backstory ---")
         backstory = input("Briefly summarize their backstory: ").strip()
-        self.character_data["Backstory"] = backstory
-
-    def generate_portrait(self):
-        print("\n--- Generating Character Portrait ---")
-        appearance = self.character_data["Physical Description"].get("Appearance", "")
-        style = self.character_data["Physical Description"].get("Style", "")
-        genre = self.character_data["Basic Information"].get("Genre", "")
-
-        prompt = f"Character portrait of a {genre} character, {appearance}, wearing {style}. Cinematic lighting, detailed."
-        encoded_prompt = urllib.parse.quote(prompt)
-        seed = random.randint(0, 1000000)
-
-        image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=1024&seed={seed}&nologo=true"
-
-        print(f"Portrait URL: {image_url}")
-        self.character_data["Portrait URL"] = image_url
-        print("Portrait generated successfully!")
-
-    def export_profile(self):
-        name = self.character_data["Basic Information"].get("Name", "Character")
-        # Sanitize filename
-        safe_name = re.sub(r'[^\w\s-]', '', name).strip().lower()
-        safe_name = re.sub(r'[-\s]+', '_', safe_name)
-        filename = f"{safe_name if safe_name else 'character'}_profile.md"
-
-        print(f"\n--- Exporting Character Profile to {filename} ---")
-
-        with open(filename, "w") as f:
-            f.write(f"# Character Profile: {name}\n\n")
-            f.write(f"![Character Portrait]({self.character_data['Portrait URL']})\n\n")
-
-            for section, data in self.character_data.items():
-                if isinstance(data, dict):
-                    f.write(f"## {section}\n")
-                    for key, value in data.items():
-                        f.write(f"- **{key}:** {value}\n")
-                    f.write("\n")
-                elif section != "Portrait URL":
-                    f.write(f"## {section}\n")
-                    f.write(f"{data}\n\n")
-
-        print(f"Profile exported successfully to {filename}")
+        self.character.data["Backstory"] = backstory
 
     def run(self):
         print("Welcome to the Character Developer Tool!")
@@ -97,11 +96,19 @@ class CharacterDeveloper:
         self.develop_personality()
         self.develop_voice()
         self.develop_backstory()
-        self.generate_portrait()
-        self.export_profile()
 
+        print("\n--- Generating Character Portrait ---")
+        url = self.character.generate_portrait_url()
+        print(f"Portrait URL: {url}")
+
+        filename = self.character.get_safe_filename()
+        print(f"\n--- Exporting Character Profile to {filename} ---")
+        with open(filename, "w") as f:
+            f.write(self.character.to_markdown())
+
+        print(f"Profile exported successfully to {filename}")
         print("\nCharacter profile completed and exported!")
 
 if __name__ == "__main__":
-    dev = CharacterDeveloper()
+    dev = CharacterDeveloperCLI()
     dev.run()
